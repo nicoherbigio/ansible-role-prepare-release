@@ -1,0 +1,80 @@
+---
+
+- name: Gather facts to prepare the new release.
+  deploy_helper:
+    state: query
+    path: "{{ prepare_release_root_path }}"
+    current_path: "{{ prepare_release_current_path }}"
+    releases_path: "{{ prepare_release_releases_path }}"
+    shared_path: "{{ prepare_release_shared_path }}"
+    release: "{{ prepare_release_new_release }}"
+
+
+- name: Set prepare_release_new_release variable to the name of the new release.
+  set_fact:
+    prepare_release_new_release: "{{ deploy_helper.new_release }}"
+
+- name: Set prepare_release_new_release_path variable to the path of the new release.
+  set_fact:
+    prepare_release_new_release_path: "{{ deploy_helper.new_release_path }}"
+
+
+- name: Create project root directory.
+  file:
+    path: "{{ deploy_helper.project_path }}"
+    state: directory
+
+- name: Create mandatory directories for releases and shared resources.
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.user | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  with_items:
+    - "{{ prepare_release_mandatory_directories }}"
+
+- name: Clone Git repository if configured.
+  git:
+    repo: "{{ prepare_release_repository_url }}"
+    version: "{{ prepare_release_repository_version }}"
+    dest: "{{ deploy_helper.new_release_path }}"
+    accept_hostkey: yes
+  when: prepare_release_repository_url != ""
+
+- name: Create file to indicate that the deployment has not finished yet.
+  file:
+    path: "{{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }}"
+    state: touch
+
+- name: Create directories if configured.
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.user | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  with_items:
+    - "{{ prepare_release_directories }}"
+  when: item is defined
+
+- name: Create files from templates if configured.
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.user | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  with_items:
+    - "{{ prepare_release_templates }}"
+  when: item is defined
+
+- name: Create symlinks to shared folders and files if configured.
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    force: yes
+  with_items:
+    - "{{ prepare_release_symlinks }}"
+  when: item is defined

@@ -1,0 +1,22 @@
+galaxy_info:
+  author: Nico Herbig
+  description: prepares a new software release
+  company: NicoHerbig.io
+
+  license: license (BSD)
+
+  min_ansible_version: 2.2
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: SLES
+    versions:
+    - all
+
+  galaxy_tags:
+    - deployment
+    - release
+
+dependencies: []

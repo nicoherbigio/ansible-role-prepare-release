@@ -1,0 +1,47 @@
+---
+
+# The root path of the project.
+#prepare_release_root_path:
+
+# The path of the symlink that will be created when the deploy is finalized.
+# This option can be relative to "{{ prepare_release_root_path }}" or absolute.
+# By default, the value will be set to "current".
+prepare_release_current_path: current
+
+# The path of the folder that will hold the releases.
+# This option can be relative to "{{ prepare_release_root_path }}" or absolute.
+# By default, the value will be set to "releases".
+prepare_release_releases_path: releases
+
+# The path of the folder that will hold the shared resources.
+# This option can be relative to "{{ prepare_release_root_path }}" or absolute.
+# If this option is set to an empty string, no shared folder will be created.
+# By default, the value will be set to "shared".
+prepare_release_shared_path: shared
+
+# The version respectively the folder name of the new release that will hold the new resources.
+# By default, the value will be set to "null" to generate a timestamp in the format of "%Y%m%d%H%M%S".
+prepare_release_new_release: null
+
+# The url of the Git repository.
+# If this option remains as an empty string, no Git repository checkout will be done.
+prepare_release_repository_url:
+
+# The specific version of the Git repository that will be checked out.
+# By default, the value will be set to "HEAD".
+prepare_release_repository_version: HEAD
+
+# The mandatory directories necessary for the role to work.
+prepare_release_mandatory_directories:
+  - { path: "{{ deploy_helper.releases_path }}" }
+  - { path: "{{ deploy_helper.new_release_path }}" }
+  - { path: "{{ deploy_helper.shared_path }}" }
+
+#
+prepare_release_directories: []
+
+#
+prepare_release_symlinks: []
+
+#
+prepare_release_templates: []
