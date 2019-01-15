@@ -27,6 +27,9 @@ prepare_release_new_release: null
 # If this option remains as an empty string, no Git repository checkout will be done.
 prepare_release_repository_url:
 
+# Whether to delete the Git repository directory.
+prepare_release_repository_delete_directory: false
+
 # The specific version of the Git repository that will be checked out.
 # By default, the value will be set to "HEAD".
 prepare_release_repository_version: HEAD
